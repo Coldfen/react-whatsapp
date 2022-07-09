@@ -1,6 +1,6 @@
 import React from "react";
 
-interface WindowSize {
+export interface WindowSize {
     width: undefined | number
     height: undefined | number
     isMobile?: boolean
