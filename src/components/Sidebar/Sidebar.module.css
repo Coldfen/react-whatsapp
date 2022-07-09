@@ -16,14 +16,14 @@
   background-color: #ededed;
 }
 
-.sidebar__header--left {
+.header_left {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   width: 68%;
 }
 
-.sidebar__header--left h4 {
+.header_left h4 {
   margin-left: 10px;
   font-size: 15px;
   font-weight: 500;
@@ -33,14 +33,14 @@
   max-width: 100%;
 }
 
-.sidebar__header--right {
+.header_right {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   max-width: 120px;
 }
 
-.sidebar__header--right > .MuiSvgIcon-root {
+.header_right > .MuiSvgIcon-root {
   margin-right: 2vw;
   font-size: 24px !important;
 }
