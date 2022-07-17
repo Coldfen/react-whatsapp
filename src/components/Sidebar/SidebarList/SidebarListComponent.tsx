@@ -1,5 +1,48 @@
-import classes from "./SidebarList.module.css";
+import './SidebarList.css'
+import {FC} from "react";
+import {CircularProgress} from "@mui/material";
+import {CancelOutlined, SearchOutlined} from "@mui/icons-material";
+import SidebarListItem from "../SidebarListItem/SidebarListItemComponent";
 
-export default function SidebarList() {
-  return <div className={classes.chat__container}>SidebarList</div>;
+interface SidebarListProps {
+  title: string,
+  data: { id: string; userID?: string; }[] | undefined
 }
+
+ const SidebarList: FC<SidebarListProps> = ({title, data}) => {
+  if (!data) {
+    return (
+        <div className="loader__container sidebar__loader">
+            <CircularProgress />
+        </div>
+    )
+  }
+
+  if(!data.length && title === "Search Results") {
+      return (
+          <div className="no-result">
+            <div>
+                <SearchOutlined />
+                <div className="cancel-root">
+                    <CancelOutlined />
+                </div>
+            </div>
+              <h2>No {title}</h2>
+          </div>
+      )
+  }
+
+  return (
+      <div className="sidebar__chat--container">
+          <h2>{title}</h2>
+          {data.map(item => (
+              <SidebarListItem
+                  key={item.id}
+                  item={item}
+              />
+          ))}
+      </div>
+  )
+}
+
+export default SidebarList

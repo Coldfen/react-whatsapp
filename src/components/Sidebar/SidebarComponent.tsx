@@ -1,4 +1,4 @@
-import React, {FC, MouseEventHandler, ReactNode, useState} from "react";
+import React, {FC, MouseEventHandler, ReactNode, SetStateAction, SyntheticEvent, useState} from "react";
 import {Avatar, IconButton} from "@mui/material";
 import firebase from "firebase/app";
 import {Add, ExitToApp, Home, Message, PeopleAlt, SearchOutlined} from "@mui/icons-material";
@@ -7,6 +7,9 @@ import {auth, createTimestamp, db} from "../../firebase";
 import {NavLink, Route, Switch} from "react-router-dom";
 import "./Sidebar.css"
 import SidebarList from "./SidebarList/SidebarListComponent";
+import useRooms from "../../hooks/useRooms";
+import useUsers from "../../hooks/useUsers";
+import useChats from "../../hooks/useChats";
 
 interface SidebarProps {
   user: firebase.User
@@ -14,12 +17,17 @@ interface SidebarProps {
 }
 
 interface NavProps {
-    activeClass: boolean
+    activeclass: string
     onClick: MouseEventHandler
     children: ReactNode
 }
 
 const Sidebar : FC<SidebarProps> = ({ user, page }) => {
+    const rooms = useRooms()
+    const users = useUsers(user)
+    const chats = useChats(user)
+
+    const [ searchResults, setSearchResults ] = useState<{ id: string; }[] | never[]>([])
     const [ menu, setMenu ] = useState(1)
 
     const signOut = () => {
@@ -37,13 +45,34 @@ const Sidebar : FC<SidebarProps> = ({ user, page }) => {
       }
   }
 
+  async function searchUsersAndRooms(event: any) {
+      event.preventDefault()
+      const query = event.target.elements.search.value
+      const userSnapshot = await db.collection('users')
+          .where('name', '==', query).get()
+      const roomSnapshot = await db.collection('rooms')
+          .where('name', '==', query).get()
+      const userResults = userSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+      }))
+      const roomResults = roomSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+      }))
+      const searchResults = [...userResults, ...roomResults]
+      setMenu(4)
+
+      setSearchResults(searchResults)
+  }
+
   let Nav;
   if(page.isMobile) {
       Nav = NavLink
   } else {
       Nav = (props: NavProps) => (
           <div
-              className={`${props.activeClass ? "sidebar__menu--selected" : ""}`}
+              className={`${props.activeclass.includes('true') ? "sidebar__menu--selected" : ""}`}
               onClick={props.onClick}
           >
               { props.children }
@@ -67,7 +96,10 @@ const Sidebar : FC<SidebarProps> = ({ user, page }) => {
             </div>
         </div>
           <div className="sidebar__search">
-              <form className="sidebar__search--container">
+              <form
+                  onSubmit={searchUsersAndRooms}
+                  className="sidebar__search--container"
+              >
                     <SearchOutlined />
                     <input
                         placeholder="Search for users or rooms"
@@ -82,7 +114,7 @@ const Sidebar : FC<SidebarProps> = ({ user, page }) => {
                 to="/chats"
                 activeClassName="sidebar__menu--selected"
                 onClick={() => setMenu(1)}
-                activeClass={menu === 1}
+                activeclass={`${menu === 1}`}
             >
                 <div className="sidebar__menu--home">
                     <Home />
@@ -94,7 +126,7 @@ const Sidebar : FC<SidebarProps> = ({ user, page }) => {
                   to="/rooms"
                   activeClassName="sidebar__menu--selected"
                   onClick={() => setMenu(2)}
-                  activeClass={menu === 2}
+                  activeclass={`${menu === 2}`}
               >
                   <div className="sidebar__menu--rooms">
                       <Message />
@@ -106,7 +138,7 @@ const Sidebar : FC<SidebarProps> = ({ user, page }) => {
                   to="/users"
                   activeClassName="sidebar__menu--selected"
                   onClick={() => setMenu(3)}
-                  activeClass={menu === 3}
+                  activeclass={`${menu === 3}`}
               >
                   <div className="sidebar__menu--users">
                       <PeopleAlt />
@@ -117,26 +149,26 @@ const Sidebar : FC<SidebarProps> = ({ user, page }) => {
           {page.isMobile ? (
               <Switch>
                   <Route path="/chats">
-                      <SidebarList />
+                      <SidebarList title="Chats" data={chats} />
                   </Route>
                   <Route path="/rooms">
-                      <SidebarList />
+                      <SidebarList title="Rooms" data={rooms} />
                   </Route>
                   <Route path="/users">
-                      <SidebarList />
+                      <SidebarList title="Users" data={users} />
                   </Route>
                   <Route path="/search">
-                      <SidebarList />
+                      <SidebarList title="Search Results" data={[]} />
                   </Route>
               </Switch>
           ) : menu === 1 ? (
-              <SidebarList />
+              <SidebarList title="Chats" data={chats} />
           ) : menu === 2 ? (
-              <SidebarList />
+              <SidebarList title="Rooms" data={rooms} />
           ) : menu === 3 ? (
-              <SidebarList />
+              <SidebarList title="Users" data={users} />
               ): menu === 4 ? (
-              <SidebarList />
+              <SidebarList title="Search Results" data={searchResults} />
           ) : null}
           <div className="sidebar__chat--addRoom">
               <IconButton onClick={createRoom}>
