@@ -4,8 +4,9 @@ import useWindowSize from "./hooks/useWindowSize";
 import Login from "./components/Login/LoginComponent"
 import useAuthUser from "./hooks/useAuthUser";
 import Sidebar from "./components/Sidebar/SidebarComponent";
-import {Route, Routes} from "react-router-dom";
+import {Redirect, Route} from "react-router-dom"
 import Chat from "./components/Chat/ChatComponent";
+
 
 function App() {
   const page = useWindowSize()
@@ -16,11 +17,12 @@ function App() {
   }
   return (
     <div className="app" style={{ ...page }}>
+        <Redirect to={page.isMobile ? "/chats" : "/" } />
        <div className="app__body">
          <Sidebar user={user} page={page} />
-         <Routes>
-           <Route path="/room/:roomId" element={ <Chat user={user} page={page}/> } />
-         </Routes>
+         <Route>
+           <Chat user={user} page={page} />
+         </Route>
        </div>
     </div>
   );
