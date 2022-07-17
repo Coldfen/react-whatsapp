@@ -1,5 +1,5 @@
 import React, {FC} from "react";
-import classes from "./Chat.module.css"
+import "./Chat.css"
 import firebase from "firebase";
 import {WindowSize} from "../../hooks/useWindowSize";
 
