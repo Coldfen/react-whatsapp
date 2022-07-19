@@ -142,7 +142,7 @@ const AudioPlayer: FC<AudioPlayerProps> = ({
       audio.current.pause()
       setPlaying(false)
     }
-  }, [audioId])
+  }, [audioId, id])
 
   return <>
     <div
