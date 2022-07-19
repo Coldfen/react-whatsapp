@@ -1,4 +1,4 @@
-import React, {FC, MouseEventHandler, ReactNode, SetStateAction, SyntheticEvent, useState} from "react";
+import React, {FC, MouseEventHandler, ReactNode, useState} from "react";
 import {Avatar, IconButton} from "@mui/material";
 import firebase from "firebase/app";
 import {Add, ExitToApp, Home, Message, PeopleAlt, SearchOutlined} from "@mui/icons-material";
