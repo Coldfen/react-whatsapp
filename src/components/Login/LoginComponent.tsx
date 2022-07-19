@@ -10,7 +10,7 @@ export default function Login() {
   return (
       <div className="app">
         <div className="login">
-          <div className="loader__container">
+          <div className="login__container">
             <img src="./login-logo.png" alt="Logo"/>
             <div className="login__text">
               <h1>Sign in to WhatsApp</h1>
