@@ -20,7 +20,7 @@ function App() {
         <Redirect to={page.isMobile ? "/chats" : "/" } />
        <div className="app__body">
          <Sidebar user={user} page={page} />
-         <Route>
+         <Route path="/room/:roomId">
            <Chat user={user} page={page} />
          </Route>
        </div>
