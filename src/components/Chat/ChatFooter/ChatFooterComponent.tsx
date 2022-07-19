@@ -46,7 +46,7 @@ interface ChatFooterProps {
 
      useEffect(() => {
          if (isRecording) {
-             recordingEl.current.style.opacity = "1";
+             recordingEl.current.style.opacity = "1"
              startTimer()
              record.current.start()
          }
