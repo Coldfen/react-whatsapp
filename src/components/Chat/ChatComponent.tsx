@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, SyntheticEvent, useState} from "react";
+import React, { FC, useState } from "react";
 import "./Chat.css"
 import firebase from "firebase";
 import {WindowSize} from "../../hooks/useWindowSize";
